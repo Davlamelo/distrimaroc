@@ -3,7 +3,7 @@
 > Étude de cas : transformer 4 exports Excel bruts en un système de pilotage complet —
 > pipeline de nettoyage, dashboard interactif et rapport PDF hebdomadaire automatique.
 > 
-> 🔗 **[Démo live du dashboard](https://VOTRE-APP.streamlit.app)**
+> 🔗 **[Démo live du dashboard](https://distrimaroc.streamlit.app)**
 
 ## Le problème
 
