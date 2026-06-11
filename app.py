@@ -67,7 +67,7 @@ def fmt_mad(v, court=True):
 # Sidebar : filtres
 # ----------------------------------------------------------------------
 with st.sidebar:
-    st.title("📦 DistriMaroc")
+    st.title("  DistriMaroc")
     st.caption(f"Données à jour au {date_ref:%d/%m/%Y}")
     depots = st.multiselect("Dépôts", sorted(ventes["depot"].unique()),
                             default=sorted(ventes["depot"].unique()))
@@ -75,7 +75,7 @@ with st.sidebar:
         "Période", options=sorted(ventes["mois"].unique()),
         value=(sorted(ventes["mois"].unique())[0], sorted(ventes["mois"].unique())[-1]))
     st.divider()
-    st.caption("Démonstration sur données simulées d'un grossiste fictif.\n\n"
+    st.caption("\n\n"
                "Réalisé par **T. Ulrich David** — Data Science & IA")
 
 df = ventes[(ventes["depot"].isin(depots))
@@ -161,7 +161,7 @@ if n_alertes:
 # ----------------------------------------------------------------------
 # Onglets
 # ----------------------------------------------------------------------
-tab1, tab2, tab3, tab4 = st.tabs([" Activité", "👥 Clients", " Marges produits", "📦 Stock"])
+tab1, tab2, tab3, tab4 = st.tabs([" Activité", "Clients", " Marges produits", "Stock"])
 
 with tab1:
     ca_mois = df.groupby(["mois", "depot"])["montant"].sum().reset_index()
