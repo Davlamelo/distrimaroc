@@ -4,7 +4,8 @@
 > pipeline de nettoyage, dashboard interactif et rapport PDF hebdomadaire automatique.
 > 
 > 🔗 **[Démo live du dashboard](https://distrimaroc.streamlit.app)**
-
+> 
+> 🌐 **[Présentation du projet](https://davlamelo.github.io/distrimaroc)**
 ## Le problème
 
 Un grossiste alimentaire (3 dépôts, 200+ clients B2B, ~50M MAD de CA annuel) pilote son
@@ -62,4 +63,4 @@ Python · pandas · Streamlit · Plotly · ReportLab · SQLite/Parquet · GitHub
 
 -----
 
-**Tassembedo Ulrich David** — Data Science & IA · [GitHub](https://github.com/Davlamelo)
+**Tassembedo Ulrich David** — Data Science & IA · [GitHub](https://github.com/Davlamelo) · [Portfolio](https://davlamelo.github.io/distrimaroc)
