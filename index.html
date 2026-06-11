@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DistriMaroc — Pilotage automatisé</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #0F766E; --teal-dark: #0D5E57; --teal-light: #CCFBF1;
+    --rouge: #DC2626; --orange: #D97706; --encre: #0F172A;
+    --muted: #64748B; --border: #E2E8F0; --bg: #F8FAFC; --card: #FFFFFF;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--encre); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 5vw; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-logo { font-family: 'Sora', sans-serif; font-size: 1.15rem; font-weight: 800; color: var(--teal); letter-spacing: -.03em; }
+  .nav-logo span { color: var(--encre); }
+  .nav-cta { background: var(--teal); color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: .85rem; font-weight: 600; cursor: pointer; text-decoration: none; font-family: 'Inter', sans-serif; transition: background .2s; }
+  .nav-cta:hover { background: var(--teal-dark); }
+  .hero { min-height: 100vh; padding: 120px 5vw 80px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; background: linear-gradient(160deg, #F0FDF9 0%, #F8FAFC 55%, #FAFAFA 100%); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -80px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(15,118,110,.07) 0%, transparent 70%); pointer-events: none; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-light); color: var(--teal); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; margin-bottom: 24px; }
+  .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+  h1 { font-family: 'Sora', sans-serif; font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -.04em; max-width: 680px; color: var(--encre); margin-bottom: 24px; }
+  h1 em { font-style: normal; color: var(--teal); }
+  .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 520px; margin-bottom: 40px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn-primary { background: var(--teal); color: #fff; border: none; border-radius: 10px; padding: 14px 28px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .2s, transform .15s; text-decoration: none; display: inline-block; }
+  .btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--encre); border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 24px; font-size: .95rem; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color .2s; text-decoration: none; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+  .stats-band { background: var(--encre); padding: 48px 5vw; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; }
+  .stat-item { text-align: center; padding: 12px 20px; border-right: 1px solid rgba(255,255,255,.1); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: #fff; letter-spacing: -.04em; line-height: 1; }
+  .stat-num span { color: var(--teal-light); }
+  .stat-label { font-size: .78rem; color: #94A3B8; margin-top: 6px; line-height: 1.4; }
+  section { padding: 100px 5vw; }
+  .section-eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+  h2 { font-family: 'Sora', sans-serif; font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -.04em; color: var(--encre); margin-bottom: 16px; line-height: 1.15; }
+  .section-sub { font-size: 1rem; color: var(--muted); max-width: 540px; line-height: 1.7; margin-bottom: 56px; }
+  .anomalies-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .anomaly-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 24px; transition: box-shadow .2s, transform .2s; position: relative; overflow: hidden; }
+  .anomaly-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .anomaly-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .card-rouge::before { background: var(--rouge); }
+  .card-orange::before { background: var(--orange); }
+  .card-teal::before { background: var(--teal); }
+  .anomaly-icon { font-size: 1.6rem; margin-bottom: 16px; display: block; }
+  .anomaly-title { font-size: .95rem; font-weight: 700; color: var(--encre); margin-bottom: 8px; }
+  .anomaly-desc { font-size: .84rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .anomaly-impact { font-size: .82rem; font-weight: 700; padding: 6px 12px; border-radius: 8px; display: inline-block; }
+  .impact-rouge { background: #FEF2F2; color: var(--rouge); }
+  .impact-orange { background: #FFFBEB; color: var(--orange); }
+  .impact-teal { background: var(--teal-light); color: var(--teal-dark); }
+  .pipeline { background: var(--encre); border-radius: 20px; padding: 48px 40px; overflow: hidden; position: relative; }
+  .pipeline::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 300px; height: 300px; border-radius: 50%; background: rgba(15,118,110,.12); pointer-events: none; }
+  .pipeline-steps { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; position: relative; z-index: 1; }
+  .pipe-step { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 20px 16px; text-align: center; }
+  .pipe-step-num { font-size: .7rem; font-weight: 700; color: #94A3B8; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
+  .pipe-step-name { font-size: .85rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .pipe-step-detail { font-size: .75rem; color: #64748B; line-height: 1.4; }
+  .pipe-arrow { color: var(--teal-light); font-size: 1.2rem; font-weight: 700; text-align: center; flex-shrink: 0; }
+  .rapport-preview { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+  .rapport-header { background: var(--encre); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .rapport-title-text { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; }
+  .rapport-date { font-size: .78rem; color: #64748B; }
+  .rapport-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-bottom: 1px solid var(--border); }
+  .rapport-kpi { padding: 20px; border-right: 1px solid var(--border); text-align: center; }
+  .rapport-kpi:last-child { border-right: none; }
+  .rapport-kpi-label { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+  .rapport-kpi-val { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--encre); }
+  .rapport-kpi-delta { font-size: .78rem; margin-top: 4px; }
+  .delta-pos { color: #16A34A; }
+  .delta-neg { color: var(--rouge); }
+  .rapport-alerts { padding: 20px 28px; }
+  .rapport-alerts-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--rouge); margin-bottom: 14px; }
+  .rapport-alert-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: .84rem; }
+  .rapport-alert-row:last-child { border-bottom: none; }
+  .alert-badge { font-size: .7rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+  .badge-rouge { background: #FEF2F2; color: var(--rouge); }
+  .badge-orange { background: #FFFBEB; color: var(--orange); }
+  .alert-text { color: var(--encre); line-height: 1.5; }
+  .alert-action { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+  .rapport-footer { background: #F8FAFC; padding: 16px 28px; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); }
+  .auto-badge { background: var(--teal-light); color: var(--teal); font-size: .72rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
+  .rapport-footer-text { font-size: .78rem; color: var(--muted); }
+  .offre-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .offre-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; transition: box-shadow .2s; }
+  .offre-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.07); }
+  .offre-card.featured { border: 2px solid var(--teal); position: relative; }
+  .featured-badge { position: absolute; top: -12px; left: 24px; background: var(--teal); color: #fff; font-size: .72rem; font-weight: 700; padding: 4px 12px; border-radius: 100px; }
+  .offre-price { font-family: 'Sora', sans-serif; font-size: 2rem; font-weight: 800; color: var(--encre); margin-bottom: 4px; }
+  .offre-period { font-size: .82rem; color: var(--muted); margin-bottom: 20px; }
+  .offre-name { font-size: 1rem; font-weight: 700; color: var(--encre); margin-bottom: 8px; }
+  .offre-desc { font-size: .84rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .offre-features { list-style: none; margin-bottom: 28px; }
+  .offre-features li { font-size: .84rem; color: var(--encre); padding: 6px 0; display: flex; gap: 10px; align-items: flex-start; border-bottom: 1px solid #F1F5F9; }
+  .offre-features li:last-child { border-bottom: none; }
+  .check { color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  .cta-section { background: var(--teal); padding: 80px 5vw; text-align: center; }
+  .cta-section h2 { color: #fff; }
+  .cta-section .section-sub { color: rgba(255,255,255,.75); margin: 0 auto 40px; }
+  .btn-white { background: #fff; color: var(--teal); border: none; border-radius: 10px; padding: 14px 32px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity .2s; text-decoration: none; display: inline-block; }
+  .btn-white:hover { opacity: .9; }
+  footer { background: var(--encre); padding: 32px 5vw; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .footer-logo { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 800; color: #fff; }
+  .footer-credit { font-size: .78rem; color: #475569; }
+  .footer-credit a { color: #64748B; text-decoration: none; }
+  @media (max-width: 720px) {
+    .pipeline-steps { grid-template-columns: 1fr; }
+    .pipe-arrow { transform: rotate(90deg); }
+    .rapport-kpis { grid-template-columns: 1fr; }
+    .rapport-kpi { border-right: none; border-bottom: 1px solid var(--border); }
+    .rapport-kpi:last-child { border-bottom: none; }
+    .stats-band { grid-template-columns: 1fr 1fr; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.1); }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Distri<span>Maroc</span></div>
+  <a href="#contact" class="nav-cta">Demander une démo</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Pilotage automatisé pour grossistes</div>
+  <h1>Vos données Excel deviennent un <em>levier de décision</em>.</h1>
+  <p class="hero-sub">Pipeline de nettoyage, dashboard interactif et rapport PDF envoyé chaque lundi matin — sans intervention manuelle. Déployé en 10 jours.</p>
+  <div class="hero-actions">
+    <a href="https://VOTRE-APP.streamlit.app" class="btn-primary">Voir la démo live →</a>
+    <a href="#anomalies" class="btn-ghost">Ce que le système détecte</a>
+  </div>
+</section>
+
+<div class="stats-band">
+  <div class="stat-item"><div class="stat-num">48<span>K</span></div><div class="stat-label">lignes de données<br>traitées automatiquement</div></div>
+  <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">types de défauts<br>détectés et corrigés</div></div>
+  <div class="stat-item"><div class="stat-num"><span>−</span>63<span>%</span></div><div class="stat-label">décrochage client<br>détecté en temps réel</div></div>
+  <div class="stat-item"><div class="stat-num">391<span>K</span></div><div class="stat-label">MAD immobilisés<br>identifiés (stock dormant)</div></div>
+  <div class="stat-item"><div class="stat-num">0<span>h</span></div><div class="stat-label">de consolidation<br>manuelle chaque semaine</div></div>
+</div>
+
+<section id="anomalies" style="background:#fff">
+  <div class="section-eyebrow">Détection automatique</div>
+  <h2>Ce que le dashboard révèle,<br>que les tableaux Excel cachent.</h2>
+  <p class="section-sub">Sur les données de démonstration, 4 signaux critiques ont été identifiés automatiquement.</p>
+  <div class="anomalies-grid">
+    <div class="anomaly-card card-rouge">
+      <span class="anomaly-icon">📉</span>
+      <div class="anomaly-title">Client en décrochage silencieux</div>
+      <div class="anomaly-desc">Le 1er client du portefeuille passe de 1,3 M à 450 K MAD/mois dès septembre — sans alerte dans les fichiers Excel.</div>
+      <span class="anomaly-impact impact-rouge">−63% · 755 K MAD/mois perdus</span>
+    </div>
+    <div class="anomaly-card card-rouge">
+      <span class="anomaly-icon">🔻</span>
+      <div class="anomaly-title">Produit vendu à perte</div>
+      <div class="anomaly-desc">Hausse du coût fournisseur (+28%) non répercutée sur le prix de vente. Chaque carton vendu creuse la marge.</div>
+      <span class="anomaly-impact impact-rouge">−34 K MAD de pertes cumulées</span>
+    </div>
+    <div class="anomaly-card card-orange">
+      <span class="anomaly-icon">📦</span>
+      <div class="anomaly-title">Stock dormant à 391 K MAD</div>
+      <div class="anomaly-desc">Un produit cumule 203 jours de couverture au dépôt de Marrakech. Capital immobilisé, DLC en danger.</div>
+      <span class="anomaly-impact impact-orange">391 000 MAD à libérer</span>
+    </div>
+    <div class="anomaly-card card-teal">
+      <span class="anomaly-icon">⚠️</span>
+      <div class="anomaly-title">Rupture imminente à 6 jours</div>
+      <div class="anomaly-desc">Le best-seller de Casablanca tombe à 6 jours de stock — à la veille du rush Ramadan, catégorie Thés & Cafés.</div>
+      <span class="anomaly-impact impact-teal">Commande fournisseur urgente</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg)">
+  <div class="section-eyebrow">Architecture technique</div>
+  <h2>De vos fichiers Excel bruts<br>à la décision, en 3 étapes.</h2>
+  <p class="section-sub">Un pipeline robuste, documenté, et entièrement automatisé dès la mise en production.</p>
+  <div class="pipeline">
+    <div class="pipeline-steps">
+      <div class="pipe-step"><div class="pipe-step-num">01</div><div class="pipe-step-name">Ingestion</div><div class="pipe-step-detail">4 exports Excel · formats hétérogènes · colonnes renommées</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="pipe-step-num">02</div><div class="pipe-step-name">Nettoyage</div><div class="pipe-step-detail">294 doublons · 3 840 montants texte · encodage corrigé</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="pipe-step-num">03</div><div class="pipe-step-name">Analyse</div><div class="pipe-step-detail">KPI · alertes client · marges · couverture stock</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="border-color:rgba(15,118,110,.4);background:rgba(15,118,110,.1)"><div class="pipe-step-num" style="color:#5DCAA5">Sortie</div><div class="pipe-step-name" style="color:#9FE1CB">Dashboard + PDF</div><div class="pipe-step-detail">Chaque lundi 07h00 · sans intervention</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" style="background:#fff">
+  <div class="section-eyebrow">Rapport automatique</div>
+  <h2>Un PDF dans la boîte mail<br>chaque lundi matin.</h2>
+  <p class="section-sub">Le gérant reçoit un résumé actionnable sans ouvrir aucun outil. Déclenché par GitHub Actions, zéro serveur.</p>
+  <div class="rapport-preview">
+    <div class="rapport-header">
+      <div><div class="rapport-title-text">DistriMaroc — Rapport hebdomadaire</div><div class="rapport-date">Semaine du 22/12/2025 au 28/12/2025</div></div>
+      <div class="auto-badge" style="background:rgba(15,118,110,.2);color:#5DCAA5">AUTO · Lundi 07h00</div>
+    </div>
+    <div class="rapport-kpis">
+      <div class="rapport-kpi"><div class="rapport-kpi-label">CA de la semaine</div><div class="rapport-kpi-val">738 K MAD</div><div class="rapport-kpi-delta delta-neg">▼ −11.4% vs semaine préc.</div></div>
+      <div class="rapport-kpi"><div class="rapport-kpi-label">Marge brute</div><div class="rapport-kpi-val">119 K MAD</div><div class="rapport-kpi-delta delta-pos">16.1% du CA</div></div>
+      <div class="rapport-kpi"><div class="rapport-kpi-label">Commandes</div><div class="rapport-kpi-val">201</div><div class="rapport-kpi-delta" style="color:var(--muted)">127 clients servis</div></div>
+    </div>
+    <div class="rapport-alerts">
+      <div class="rapport-alerts-title">⚡ 12 alertes — action requise</div>
+      <div class="rapport-alert-row"><span class="alert-badge badge-rouge">DÉCROCHAGE</span><div><div class="alert-text"><strong>Marjane Distribution Nord</strong> — CA mensuel −63%</div><div class="alert-action">→ Appel commercial sous 48h · manque à gagner : 755 K MAD/mois</div></div></div>
+      <div class="rapport-alert-row"><span class="alert-badge badge-rouge">PERTE</span><div><div class="alert-text"><strong>Huile de tournesol 5L</strong> — vendue à perte depuis mars</div><div class="alert-action">→ Revoir le prix de vente · −34 K MAD cumulés sur 6 mois</div></div></div>
+      <div class="rapport-alert-row"><span class="alert-badge badge-orange">RUPTURE</span><div><div class="alert-text"><strong>Thé Chunmee 5kg</strong> · Casablanca — 6 jours de stock</div><div class="alert-action">→ Commande fournisseur immédiate avant rush Ramadan</div></div></div>
+    </div>
+    <div class="rapport-footer">
+      <span class="auto-badge">Généré automatiquement</span>
+      <span class="rapport-footer-text">GitHub Actions · chaque lundi 07h00 UTC · aucune intervention manuelle</span>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="background:var(--bg)">
+  <div class="section-eyebrow">Tarifs</div>
+  <h2>Une offre fixe, un livrable clair.</h2>
+  <p class="section-sub">Pas de régie à l'heure. Vous savez exactement ce que vous payez et ce que vous recevez.</p>
+  <div class="offre-grid">
+    <div class="offre-card">
+      <div class="offre-price">800 €</div>
+      <div class="offre-period">livraison en 10 jours</div>
+      <div class="offre-name">Dashboard de pilotage</div>
+      <div class="offre-desc">Pour une PME qui veut passer ses fichiers Excel à un vrai outil de suivi.</div>
+      <ul class="offre-features">
+        <li><span class="check">✓</span> Pipeline de nettoyage de vos exports</li>
+        <li><span class="check">✓</span> Dashboard interactif (Streamlit)</li>
+        <li><span class="check">✓</span> 5 KPI + détection d'alertes</li>
+        <li><span class="check">✓</span> Déploiement en ligne inclus</li>
+      </ul>
+    </div>
+    <div class="offre-card featured">
+      <div class="featured-badge">Recommandé</div>
+      <div class="offre-price">800 € <span style="font-size:1rem;font-weight:400;color:var(--muted)">+ 150 €/mois</span></div>
+      <div class="offre-period">setup + maintenance mensuelle</div>
+      <div class="offre-name">Dashboard + Rapport automatique</div>
+      <div class="offre-desc">Le setup complet avec rapport PDF hebdomadaire envoyé automatiquement chaque lundi.</div>
+      <ul class="offre-features">
+        <li><span class="check">✓</span> Tout le pack Dashboard</li>
+        <li><span class="check">✓</span> Rapport PDF généré chaque lundi</li>
+        <li><span class="check">✓</span> Envoi email automatique (GitHub Actions)</li>
+        <li><span class="check">✓</span> Maintenance et mises à jour incluses</li>
+        <li><span class="check">✓</span> Ajout de KPI sur demande</li>
+      </ul>
+    </div>
+    <div class="offre-card">
+      <div class="offre-price">Sur devis</div>
+      <div class="offre-period">délai selon périmètre</div>
+      <div class="offre-name">Projet sur mesure</div>
+      <div class="offre-desc">ERP, API, sources multiples, plusieurs dépôts ou filiales, intégration dans votre SI.</div>
+      <ul class="offre-features">
+        <li><span class="check">✓</span> Audit de vos sources de données</li>
+        <li><span class="check">✓</span> Architecture adaptée à votre SI</li>
+        <li><span class="check">✓</span> Formation de vos équipes</li>
+        <li><span class="check">✓</span> SLA et support définis ensemble</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="cta-section">
+  <h2>Prêt à arrêter de piloter à l'aveugle ?</h2>
+  <p class="section-sub">Une démo de 30 minutes sur vos propres données. Sans engagement.</p>
+  <a href="mailto:tass.u.david@gmail.com" class="btn-white">Prendre rendez-vous →</a>
+</div>
+
+<footer>
+  <div class="footer-logo">DistriMaroc</div>
+  <div class="footer-credit">Réalisé par <strong style="color:#94A3B8">T. Ulrich David</strong> — Data Science & IA · <a href="https://github.com/Davlamelo">github.com/Davlamelo</a></div>
+</footer>
+</body>
+</html>

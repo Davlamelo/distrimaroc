@@ -1,0 +1,6 @@
+data/clean/
+rapports/
+__pycache__/
+*.pyc
+.streamlit/
+README_anomalies.md

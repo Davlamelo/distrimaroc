@@ -1,0 +1,41 @@
+name: Rapport hebdomadaire
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"        # chaque lundi à 07h00 UTC
+  workflow_dispatch:            # déclenchement manuel possible (pratique pour la démo)
+
+jobs:
+  rapport:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt reportlab matplotlib
+
+      - name: Pipeline de nettoyage
+        run: python pipeline.py --input data/raw --output data/clean
+
+      - name: Générer le rapport PDF
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          RAPPORT_DESTINATAIRE: ${{ secrets.RAPPORT_DESTINATAIRE }}
+        run: python rapport_hebdo.py
+
+      - name: Publier le rapport en artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-hebdomadaire
+          path: rapports/*.pdf
+          retention-days: 90
