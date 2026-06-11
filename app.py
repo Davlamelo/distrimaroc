@@ -39,10 +39,17 @@ def charger():
     ventes["date"] = pd.to_datetime(ventes["date"])
     return ventes, clients, stock
 
+import subprocess
+from pathlib import Path
+
+if not Path("data/clean/ventes.parquet").exists():
+    with st.spinner("Préparation des données en cours..."):
+        subprocess.run(["python", "pipeline.py"], check=True)
+
 try:
     ventes, clients, stock = charger()
-except FileNotFoundError:
-    st.error("Données introuvables. Lancez d'abord : `python pipeline.py`")
+except Exception as e:
+    st.error(f"Erreur au chargement : {e}")
     st.stop()
 
 date_ref = ventes["date"].max()
