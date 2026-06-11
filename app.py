@@ -68,7 +68,6 @@ def fmt_mad(v, court=True):
 # ----------------------------------------------------------------------
 with st.sidebar:
     st.title("  DistriMaroc")
-    st.caption(f"Données à jour au {date_ref:%d/%m/%Y}")
     depots = st.multiselect("Dépôts", sorted(ventes["depot"].unique()),
                             default=sorted(ventes["depot"].unique()))
     periode = st.select_slider(
