@@ -10,6 +10,9 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import subprocess
+from pathlib import Path
+import sys
 
 st.set_page_config(page_title="DistriMaroc — Pilotage", page_icon="📦",
                    layout="wide", initial_sidebar_state="expanded")
@@ -39,12 +42,11 @@ def charger():
     ventes["date"] = pd.to_datetime(ventes["date"])
     return ventes, clients, stock
 
-import subprocess
-from pathlib import Path
+
 
 if not Path("data/clean/ventes.parquet").exists():
     with st.spinner("Préparation des données en cours..."):
-        subprocess.run(["python", "pipeline.py"], check=True)
+        subprocess.run([sys.executable, "pipeline.py"], check=True)
 
 try:
     ventes, clients, stock = charger()
